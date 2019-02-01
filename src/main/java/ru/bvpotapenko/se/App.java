@@ -1,6 +1,4 @@
 package ru.bvpotapenko.se;
-
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import ru.bvpotapenko.se.myarray.MyArray;
 
 import java.util.Random;
@@ -10,13 +8,16 @@ import java.util.Random;
  */
 public class App {
     public static void main(String[] args) {
+        final int  ARR_SIZE = 100000;
+
         System.out.println("START");
-        MyArray arr = new MyArray(10000000);
+        MyArray arr = new MyArray(ARR_SIZE);
         System.out.println("ARRAY CREATED");
-        arr= fillArray(arr);
-        System.out.println("Array size = " + arr.getSize());
+        arr = fillArray(arr);
         testBubble(arr);
+        arr = new MyArray(ARR_SIZE);
         testInsert(fillArray(arr));
+        arr = new MyArray(ARR_SIZE);
         testSelect(fillArray(arr));
     }
 
@@ -51,8 +52,9 @@ public class App {
     }
 
     private static MyArray fillArray(MyArray arr) {
-        for (int i = 0; i < arr.getSize(); i++)
-            arr.insert(new Random().nextInt(10000000));
+        int capacity = arr.getCapacity();
+        for (int i = 0; i < capacity; i++)
+            arr.insert(new Random().nextInt(1000));
         return arr;
     }
 }

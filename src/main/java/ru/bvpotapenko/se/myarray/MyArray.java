@@ -5,20 +5,21 @@ public class MyArray {
     private MyArrayItem head;
     private MyArrayItem tail;
     private int size;
+    private int capacity;
 
-    public MyArray(int size) {
-        if (size <= 0) throw new IllegalArgumentException("Size must be greater than 0");
-
-        this.size = size;
+    public MyArray(int capacity) {
+        if (capacity <= 0) throw new IllegalArgumentException("Size must be greater than 0");
+        this.size = 0;
+        this.capacity = capacity;
         this.head = new MyArrayItem();
+        this.tail = head;
         MyArrayItem current = head;
-        for (int i = 1; i < size; i++) {
+        for (int i = 1; i < capacity; i++) {
             MyArrayItem newItem = new MyArrayItem();
             newItem.setPrevious(current);
             current.setNext(newItem);
             current = newItem;
         }
-        this.tail = current;
     }
 
     public int getElement(int index) {
@@ -110,11 +111,35 @@ public class MyArray {
 
     //Inserts in the end of the list
     public void insert(int value) {
-        tail = new MyArrayItem(value, tail);
         this.size++;
+        if (size >= capacity) extendCapacity();
+        tail = tail.getNext();
+        tail.setValue(value);
+    }
+
+    private void extendCapacity() {
+        boolean isnew = false;
+        int oldCapacity = capacity;
+        capacity = (int) (capacity * 1.5 + 1);
+        MyArrayItem current;
+        if (head == null || tail == null){
+            head = new MyArrayItem();
+            tail = head;
+            oldCapacity++;
+        }
+        current = tail;
+        for (int i = oldCapacity; i < capacity; i++) {
+            MyArrayItem newItem = new MyArrayItem();
+            newItem.setPrevious(current);
+            current.setNext(newItem);
+            current = newItem;
+        }
     }
 
 
+    public int getCapacity() {
+        return this.capacity;
+    }
     public int getSize() {
         return this.size;
     }
@@ -171,10 +196,10 @@ public class MyArray {
         if (size < 2) return;
         MyArrayItem in;
         MyArrayItem out = head.getNext();
-        while (out.hasNext() || out == tail){
+        while (out.hasNext() || out == tail) {
             MyArrayItem temp = out;
             in = out;
-            while(in.hasPrevious() && in.getPrevious().getValue() >= temp.getValue()){
+            while (in.hasPrevious() && in.getPrevious().getValue() >= temp.getValue()) {
                 in.setValue(in.getPrevious().getValue());
                 in = in.getPrevious();
             }
@@ -189,6 +214,12 @@ public class MyArray {
         a.setValue(a.getValue() + b.getValue());
         b.setValue(a.getValue() - b.getValue());
         a.setValue(a.getValue() - b.getValue());
+    }
+    public void deleteAll(){
+        head = null;
+        tail = null;
+        capacity = 0;
+        size = 0;
     }
 }
 
