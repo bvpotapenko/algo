@@ -1,6 +1,8 @@
 package ru.bvpotapenko.se.algo.linked;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.StringJoiner;
 
 public class MyLinkedList<Item> implements Iterable<Item> {
 
@@ -35,6 +37,31 @@ public class MyLinkedList<Item> implements Iterable<Item> {
             this.item = item;
             this.next = next;
             this.previous = previous;
+        }
+
+        @Override
+        public String toString() {
+            return item.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || !(o instanceof MyLinkedList<?>.Node)) return false;
+
+            Node that = (Node) o;
+            if (item == null) {
+                return that.item == null;
+            } else {
+                return item.equals(that.item);
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 0;
+            if (item != null) result = item.hashCode();
+            return result;
         }
     }
 
@@ -199,7 +226,7 @@ public class MyLinkedList<Item> implements Iterable<Item> {
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(", ");
         Iterator<Item> iter = this.iterator();
-        while (iter.hasNext()){
+        while (iter.hasNext()) {
             stringJoiner.add(iter.next().toString());
         }
         return "[" + stringJoiner.toString() + "]";
@@ -208,20 +235,24 @@ public class MyLinkedList<Item> implements Iterable<Item> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MyLinkedList)) return false;
+        if (o == null || !(o instanceof MyLinkedList)) return false;
 
-        MyLinkedList<?> that = (MyLinkedList<?>) o;
+        MyLinkedList<Item> that = (MyLinkedList<Item>) o;
 
         if (size != that.size) return false;
-        if (!getFirst().equals(that.getFirst())) return false;
-        return getLast().equals(that.getLast());
+        return getFirst().equals(that.getFirst());
     }
 
     @Override
     public int hashCode() {
         int result = size;
-        result = 31 * result + getFirst().hashCode();
-        result = 31 * result + getLast().hashCode();
+        int prime = 31;
+
+        if (!isEmpty()) {
+            result = prime * result + getFirst().hashCode();
+            result = prime * result + getLast().hashCode();
+        }
+
         return result;
     }
 }
