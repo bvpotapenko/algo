@@ -1,4 +1,4 @@
-package ru.bvpotapenko.se.algo;
+package ru.bvpotapenko.se.algo.linked;
 
 import java.util.NoSuchElementException;
 
@@ -32,6 +32,8 @@ public class MyLinkedList<Item> {
         first = new Node(item, oldFirst, null);
         if (isEmpty()) {
             last = first;
+        }else{
+            oldFirst.previous = first;
         }
         size++;
     }
