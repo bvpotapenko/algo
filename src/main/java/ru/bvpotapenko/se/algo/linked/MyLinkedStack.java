@@ -18,4 +18,8 @@ public class MyLinkedStack<Item> {
     public int size(){ return size();}
 
     public boolean isEmpty(){return isEmpty();}
+
+    public String toString(){
+        return stack.toString();
+    }
 }

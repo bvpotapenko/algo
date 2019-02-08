@@ -1,8 +1,32 @@
 package ru.bvpotapenko.se.algo.linked;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class MyLinkedList<Item> {
+public class MyLinkedList<Item> implements Iterable<Item> {
+
+    @Override
+    public Iterator<Item> iterator() {
+        return new MyLinkedListIterator();
+    }
+
+    private class MyLinkedListIterator implements Iterator<Item> {
+        private Node current = first;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public Item next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            Item item = current.item;
+            current = current.next;
+            return item;
+        }
+    }
+
     private class Node {
         Item item;
         Node next;
@@ -32,7 +56,7 @@ public class MyLinkedList<Item> {
         first = new Node(item, oldFirst, null);
         if (isEmpty()) {
             last = first;
-        }else{
+        } else {
             oldFirst.previous = first;
         }
         size++;
@@ -94,28 +118,28 @@ public class MyLinkedList<Item> {
         return getNodeByIndex(index).item;
     }
 
-    public void set(int index, Item value){
-       getNodeByIndex(index).item = value;
+    public void set(int index, Item value) {
+        getNodeByIndex(index).item = value;
     }
 
-    public boolean find(Item value){
+    public boolean find(Item value) {
         Node current = first;
-        while (current != null && !current.item.equals(value)){
+        while (current != null && !current.item.equals(value)) {
             current = current.next;
         }
         return current != null;
     }
 
-    public Item delete (Item item){
+    public Item delete(Item item) {
         Node current = first;
-        while (current != null && !current.item.equals(item)){
+        while (current != null && !current.item.equals(item)) {
             current = current.next;
         }
-        if(current == null){
+        if (current == null) {
             return null;
-        }else if(current == first){
+        } else if (current == first) {
             return deleteFirst();
-        }else if(current == last){
+        } else if (current == last) {
             return deleteLast();
         }
         join(current.previous, current.next);
@@ -124,33 +148,33 @@ public class MyLinkedList<Item> {
         return current.item;
     }
 
-    private void join(Node previous, Node next){
+    private void join(Node previous, Node next) {
         previous.next = next;
         next.previous = previous;
     }
 
-    private void cutLinks(Node node){
+    private void cutLinks(Node node) {
         node.previous = null;
         node.next = null;
     }
 
-    private void insert(int index, Item item){
+    private void insert(int index, Item item) {
         if (index < 0 || index > size) throw new ArrayIndexOutOfBoundsException();
-        if(index == 0){
+        if (index == 0) {
             insertFirst(item);
             return;
-        }else if(index == size){
+        } else if (index == size) {
             insertLast(item);
             return;
         }
         Node curr = getNodeByIndex(index);
-        Node newNode = new Node(item, curr,curr.previous);
+        Node newNode = new Node(item, curr, curr.previous);
         curr.previous.next = newNode;
         curr.previous = newNode;
         size++;
     }
 
-    private Node getNodeByIndex(int index){
+    private Node getNodeByIndex(int index) {
         if (index < 0 || index > size - 1) throw new ArrayIndexOutOfBoundsException();
         boolean startFromHead = true;
         Node curr;
@@ -165,12 +189,18 @@ public class MyLinkedList<Item> {
         } else {
             int currentIndex = size - 1;
             curr = last;
-            while (currentIndex > index){
+            while (currentIndex > index) {
                 curr = curr.previous;
                 currentIndex--;
             }
         }
         return curr;
     }
+
+    public String toString() {
+        return "";// TODO: 08-Feb-19
+    }
+
+
 }
 
