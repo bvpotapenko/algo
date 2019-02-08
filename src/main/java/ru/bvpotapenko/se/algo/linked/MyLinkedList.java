@@ -223,6 +223,20 @@ public class MyLinkedList<Item> implements Iterable<Item> {
         return curr;
     }
 
+    public Item replace(Item oldValue, Item newValue) {
+        if (isEmpty()) throw new ArrayIndexOutOfBoundsException();
+        Node current = first;
+        while (current != null) {
+           if (current.item.equals(oldValue)) {
+               current.item = newValue;
+               return newValue;
+           }
+           current = current.next;
+        }
+
+        throw new NoSuchElementException();
+    }
+
     public String toString() {
         StringJoiner stringJoiner = new StringJoiner(", ");
         Iterator<Item> iter = this.iterator();
