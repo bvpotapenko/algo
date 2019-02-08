@@ -1,7 +1,6 @@
 package ru.bvpotapenko.se.algo.linked;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class MyLinkedList<Item> implements Iterable<Item> {
 
@@ -198,9 +197,32 @@ public class MyLinkedList<Item> implements Iterable<Item> {
     }
 
     public String toString() {
-        return "";// TODO: 08-Feb-19
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        Iterator<Item> iter = this.iterator();
+        while (iter.hasNext()){
+            stringJoiner.add(iter.next().toString());
+        }
+        return "[" + stringJoiner.toString() + "]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MyLinkedList)) return false;
 
+        MyLinkedList<?> that = (MyLinkedList<?>) o;
+
+        if (size != that.size) return false;
+        if (!getFirst().equals(that.getFirst())) return false;
+        return getLast().equals(that.getLast());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = size;
+        result = 31 * result + getFirst().hashCode();
+        result = 31 * result + getLast().hashCode();
+        return result;
+    }
 }
 
