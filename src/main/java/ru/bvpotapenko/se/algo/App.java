@@ -24,8 +24,6 @@ public class App
                 System.out.println("\nNOT balanced");
             }
             System.out.println(tree);
-            System.out.println("===============================");
-            System.out.println(tree.simpleToString());
         }
 
         System.out.println("Balanced trees amount: " +(balanced /20d * 100) + "%" );
