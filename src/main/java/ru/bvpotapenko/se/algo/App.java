@@ -6,33 +6,45 @@ import java.util.Random;
 
 /**
  * Demo for binary search tree
- *
  */
-public class App 
-{
-    public static void main( String[] args ){
-       check20Trees();
+public class App {
+    public static void main(String[] args) {
+        //Balanced tree example
+        BST<Integer, Integer> tree = new BST<>();
+        tree.put(10, 10);
+        tree.put(20, 10);
+        tree.put(14, 10);
+        tree.put(25, 10);
+        tree.put(5, 10);
+        tree.put(8, 10);
+        tree.put(3, 10);
+        System.out.println(tree);
+        System.out.println("Tree is balanced: " + tree.isBalanced());
+        
+        check20Trees();
     }
-    private static void check20Trees(){
+
+    private static void check20Trees() {
         double balanced = 0;
         for (int i = 0; i < 20; i++) {
             BST tree = getBST(6);
-            if(tree.isBalanced()){
+            if (tree.isBalanced()) {
                 balanced++;
                 System.out.println("\nTree is BALANSED");
-            }else{
+            } else {
                 System.out.println("\nNOT balanced");
             }
             System.out.println(tree);
         }
 
-        System.out.println("Balanced trees amount: " +(balanced /20d * 100) + "%" );
+        System.out.println("Balanced trees amount: " + (balanced / 20d * 100) + "%");
     }
-    private static BST getBST(int level){
+
+    private static BST getBST(int level) {
         Random rnd = new Random();
         BST<Integer, Character> tree = new BST<>();
-        while (tree.height() <= level){
-            tree.put(-100 + rnd.nextInt(201), (char)(rnd.nextInt(26) + 65));
+        while (tree.height() <= level) {
+            tree.put(-100 + rnd.nextInt(201), (char) (rnd.nextInt(26) + 65));
         }
         return tree;
     }

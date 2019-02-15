@@ -1,5 +1,7 @@
 package ru.bvpotapenko.se.algo.bst;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class BST<Key extends Comparable<Key>, Value> {
@@ -195,9 +197,7 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     private boolean isLeaf(Node node) {
-        if (node.left == null && node.right == null)
-            return true;
-        return false;
+        return node.left == null && node.right == null;
     }
 
     public boolean isBalanced() {
@@ -214,58 +214,66 @@ public class BST<Key extends Comparable<Key>, Value> {
         if (node.left == null || node.right == null)
             return false;
         //Left and right subtrees exist and their heights differ more then 1
-        if (isBalanced(node.left) &&
+        return isBalanced(node.left) &&
                 isBalanced(node.right) &&
-                height(root.left) - height(root.right) <= 1) {
-            return true;
-        } else
-            return false;
+                height(root.left) - height(root.right) <= 1;
     }
 
     public String toString() {
         if (isEmpty()) return "";
-        return subTreeToString(root, false, root.left != null);
+        return subTreeToString(root, false, new ArrayList<Integer>(), 0);
     }
 
-    private String subTreeToString(Node node, boolean isRightBranch, boolean parentHasLeft) {
-        parentHasLeft = parentHasLeft || node.left != null;
-        String tree = "[" + getFiller(" ", 2 - node.key.toString().length())
+    /**
+     *
+     * @param node  - a tree root to be drawn
+     * @param isRightBranch - if this branch a child of a right branch we draw it with offset
+     * @param parentLefts - a set of positions where parental nodes have left branches.
+     *                    We use this positions to add vertical delimiters "|"/
+     * @param hTab - horizontal offset from the root for current node
+     *
+     */
+    private String subTreeToString(Node node, boolean isRightBranch, List<Integer> parentLefts, int hTab) {
+        //Add a mark that this node has left branch
+        if(node.left != null && !parentLefts.contains(hTab)){
+            parentLefts.add(hTab);
+        }
+        //Nodes must be of the same width "[xxx]"
+        //if node's value's less than 3 we add blank space: [  3], [ 99], [ -1];
+        String tree = "[" + getFiller(" ", 3 - node.key.toString().length(), null)
                 + node.key + "]"; //"; " + node.value+"]";
         if (node.right != null) {
-            tree = tree + "--" + subTreeToString(node.right, true, parentHasLeft);
+            tree = tree + "--" + subTreeToString(node.right, true, parentLefts, hTab + 1);
         }
         String spacing = "";
-        String leftSibling = "";
-        if (parentHasLeft) leftSibling = "|";
-        if (isRightBranch) spacing = leftSibling + getFiller("       ", node.level - 1) + "|\n" +
-                leftSibling + getFiller("       ", node.level - 1);
+        String filler = getFiller("      ", hTab, parentLefts);
+        //For right branches and their subtrees we add offset filled with the filler
+        if (isRightBranch) spacing = filler + "|\n" + filler;
 
         if (node.left != null) {
             tree = tree + "\n" +
-                    (spacing.isEmpty() ? leftSibling + "\n" : spacing) +
-                    subTreeToString(node.left, false, parentHasLeft);
+                    (spacing.isEmpty() ? "|\n" : spacing) +
+                    subTreeToString(node.left, isRightBranch, parentLefts, hTab);
         }
         return tree;
     }
 
-    private String getFiller(String filler, int n) {
+    /**
+     * This method prepares a line with branches lines above current node
+     * @param filler - pattern to be repeated @times - times
+     * @param times - how many times to repeat filler
+     * @param delimeterPositions - positions for drawing left branches
+     * @return - Console graphic tree representation
+     */
+    private String getFiller(String filler, int times, List<Integer> delimeterPositions) {
+        if(times == 0) return "";
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i <= n; i++)
+        for (int i = 0; i < times; i++) {
+            if(delimeterPositions != null && delimeterPositions.contains(i)){
+                sb.append("|");
+            }
             sb.append(filler);
+        }
         return sb.toString();
-    }
-
-    public String simpleToString() {
-        if (isEmpty()) return "";
-        return simpleToString(root, 0);
-    }
-
-    private String simpleToString(Node node, int marker) {
-        if (node == null) return "";
-        String tree =
-                "[" + node.key + "; " + node.value + "]" +
-                        "\nR: " + marker + " " + simpleToString(node.right, marker + 10) +
-                        "\nL: " + marker + " " + simpleToString(node.left, marker + 100);
-        return tree;
     }
 }
