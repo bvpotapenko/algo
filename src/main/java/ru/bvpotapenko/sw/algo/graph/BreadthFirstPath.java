@@ -70,6 +70,6 @@ public class BreadthFirstPath {
     }
 
     public int distTo(int dist) {
-        return distTo.containsKey(dist) ? distTo.get(dist) : INF;
+        return distTo.getOrDefault(dist, INF);
     }
 }
