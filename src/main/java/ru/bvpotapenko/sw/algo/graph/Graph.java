@@ -5,8 +5,8 @@ import java.util.*;
 public class Graph {
     private int vertexCount = 0;
     private int edgeCount = 0;
-    private boolean isOriented;
-    protected Map<Integer, LinkedList<Edge>> adjLists = new TreeMap<>();
+    private final boolean isOriented;
+    private final Map<Integer, LinkedList<Edge>> adjLists = new TreeMap<>();
 
     public Graph(boolean isOriented) {
         this.isOriented = isOriented;
@@ -42,11 +42,11 @@ public class Graph {
     }
 
     class Edge {
-        int from;
-        int to;
-        int weight;
+        final int from;
+        final int to;
+        final int weight;
 
-        public Edge(int from, int to, int weight) {
+        Edge(int from, int to, int weight) {
             this.from = from;
             this.to = to;
             this.weight = weight;
@@ -61,9 +61,7 @@ public class Graph {
 
             if (from == edge.from && to == edge.to && weight == edge.weight)
                 return true;
-            if (!isOriented && from == edge.to && to == edge.from && weight == edge.weight)
-                return true;
-            return false;
+            return !isOriented && from == edge.to && to == edge.from && weight == edge.weight;
         }
 
         @Override
@@ -99,10 +97,10 @@ public class Graph {
         Set<Edge> usedEdges = new HashSet<>();
         String arrow = isOriented ? ">" : "";
         for (Map.Entry<Integer, LinkedList<Edge>> entry : adjLists.entrySet()) {
-            sb.append("(" + entry.getKey() + "):");
+            sb.append("(").append(entry.getKey()).append("):");
             for (Edge e : entry.getValue()) {
                 if (isOriented || usedEdges.add(e)) {
-                    sb.append("\n\t==[" + e.weight + "]==" + arrow + " (" + e.to + ")");
+                    sb.append("\n\t==[").append(e.weight).append("]==").append(arrow).append(" (").append(e.to).append(")");
                 }
             }
             sb.append("\n");
