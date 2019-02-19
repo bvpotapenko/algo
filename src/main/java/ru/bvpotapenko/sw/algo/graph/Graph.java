@@ -41,6 +41,10 @@ public class Graph {
         vertexCount++;
     }
 
+    public int vertexCount() {
+        return this.vertexCount;
+    }
+
     class Edge {
         final int from;
         final int to;
@@ -76,6 +80,11 @@ public class Graph {
                 result = 31 * result + weight;
             }
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "[" + from + "; " + to + "; " + weight + "]";
         }
     }
 
