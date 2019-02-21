@@ -17,7 +17,7 @@ public class Main {
         System.out.println(ht);
         System.out.println();
         System.out.println("Capacity: " + ht.getCapacity());
-        System.out.println("Ensure capacity 102 ");
+        System.out.println("Ensure capacity 9974 ");
         ht.ensureCapacity(9974);
         System.out.println("Capacity: " + ht.getCapacity());
         System.out.println(ht);
