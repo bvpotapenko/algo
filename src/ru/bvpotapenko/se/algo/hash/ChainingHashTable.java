@@ -1,5 +1,7 @@
 package ru.bvpotapenko.se.algo.hash;
 
+import java.math.BigInteger;
+
 public class ChainingHashTable<K, V> {
     private final int INITIAL_CAPACITY = 97;
     private int size = 0;
@@ -32,9 +34,9 @@ public class ChainingHashTable<K, V> {
     }
 
     private int hash(K key) {
-        return hashService(key, size);
+        return hashService(key, getCapacity());
     }
-
+    //Used for rehash
     private int hashService(K key, int mod) {
         return (key.hashCode() & 0x7fffffff) % mod;
     }
@@ -100,8 +102,13 @@ public class ChainingHashTable<K, V> {
 
     private void grow(int minCapacity) {
         // overflow-conscious code
-        int oldCapacity = st.length;
-        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        BigInteger nextPrime = new BigInteger(String.valueOf(minCapacity)).nextProbablePrime();
+        int newCapacity;
+        try {
+            newCapacity = nextPrime.intValueExact();
+        } catch (ArithmeticException e) {
+            newCapacity = MAX_ARRAY_SIZE;
+        }
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
         if (newCapacity - MAX_ARRAY_SIZE > 0)
@@ -131,20 +138,60 @@ public class ChainingHashTable<K, V> {
         return newSt;
     }
 
+    /**
+     * [
+     * 	(65):
+     * 		A -> A;
+     * 		¢ -> A2;
+     * 	(66):
+     * 		B -> B;
+     * 		£ -> B2;
+     * 	(67):
+     * 		C -> C;
+     * 		¤ -> C2;
+     * ]
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (int i = 0; i < st.length; i++) {
-            sb.append("[");
             if (st[i] != null)
-                sb.append("\n").append("(").append(i).append("):");
+                sb.append("\n\t").append("(").append(i).append("):");
             Node x = (Node) st[i];
             while (x != null) {
-                sb.append("\n\t").append(x.key).append(" -> ").append(x.value).append(";");
+                sb.append("\n\t\t").append(x.key).append(" -> ").append(x.value).append(";");
                 x = x.next;
             }
         }
-        sb.append("]");
+        sb.append("\n").append("]");
         return sb.toString();
+    }
+
+    public V delete(K key) {
+        if (key == null) throw new IllegalArgumentException("Key can't be Null");
+        if(size == 0) return null;
+
+        int i = hash(key);
+        Node x = (Node) st[i];
+        Node previous = x;
+        if (x != null) {
+            while (x.next != null && x.key != key) {
+                previous = x;
+                x = x.next;
+            }
+            if (key.equals(x.key)) {
+                V value = x.value;
+                if(st[i] == x){ //If we remove first item in the list
+                    st[i] = x.next;
+                }else{
+                    previous.next = x.next;
+                }
+                x.value = null;
+                x.next = null;
+                size--;
+                return value;
+            }
+        }
+        return null;
     }
 }
