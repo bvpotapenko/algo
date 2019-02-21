@@ -1,7 +1,7 @@
 package ru.bvpotapenko.se.algo.hash;
 
 public class ChainingHashTable<K, V> {
-    private final int INITIAL_CAPACITY = 10;
+    private final int INITIAL_CAPACITY = 97;
     private int size = 0;
     private Object[] st = new Object[INITIAL_CAPACITY];
     private final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
@@ -40,7 +40,7 @@ public class ChainingHashTable<K, V> {
     }
 
     public V get(K key) {
-        if (key == null) throw new IllegalArgumentException("Key is Null");
+        if (key == null) throw new IllegalArgumentException("Key can't be Null");
         int i = hash(key);
         Node x = (Node) st[i];
         while (x != null) {
@@ -56,21 +56,27 @@ public class ChainingHashTable<K, V> {
 
     public V put(K key, V value) {
         if (key == null) return null;
-        value.equals(putService(st, key, value));
-        size++;
-        return value;
-    }
-
-    private V putService(Object[] st, K key, V value) {
-        int i = hashService(key, st.length);
+        int i = hash(key);
         if (st[i] == null) {
             st[i] = new Node(key, value, null);
         } else {
             Node x = (Node) st[i];
-            while (x.next != null) x = x.next;
+            while (x.next != null) {
+                if (x.key.equals(key)) {
+                    x.value = value;
+                    return value;
+                }
+                x = x.next;
+            }
             x.next = new Node(key, value, null);
         }
+        size++;
         return value;
+    }
+
+    private void putCopy(Object[] st, K key, V value) {
+        int i = hashService(key, st.length);
+        st[i] = new Node(key, value, (Node) st[i]);
     }
 
     public void ensureCapacity(int minCapacity) {
@@ -118,7 +124,7 @@ public class ChainingHashTable<K, V> {
         for (Object o : st) {
             Node x = (Node) o;
             while (x != null) {
-                putService(newSt, x.key, x.value);
+                putCopy(newSt, x.key, x.value);
                 x = x.next;
             }
         }
